@@ -1,13 +1,12 @@
 import { httpGetJson } from "./http.js";
 
-const DEFAULT_BATCH = 12;
+const DEFAULT_BATCH = 22;
 
 function normalizeResponse(data, page, pageSize) {
-  // API bitta object qaytaryapti -> items array qilamiz
   if (data && !Array.isArray(data) && data.title) {
     return {
       page,
-      pageSize,
+      pageSize:20,
       total: 1,
       items: [
         {
@@ -27,7 +26,6 @@ function normalizeResponse(data, page, pageSize) {
     };
   }
 
-  // Agar keyin backend list qilib yuborsa, shu yerda kengaytiramiz
   return data;
 }
 
