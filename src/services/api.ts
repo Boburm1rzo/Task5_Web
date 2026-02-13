@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { LyricsDto, SongDetailsDto, SongsPageResponse } from "../types";
+import type { SongDetailsDto, SongsPageResponse } from "../types";
 
 const api = axios.create({
   baseURL: "/api",

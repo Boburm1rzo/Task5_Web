@@ -24,7 +24,7 @@ export default function GalleryView() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setPage(1);
+    setPage(page);
     pageRef.current = 1;
 
     setItems([]);
