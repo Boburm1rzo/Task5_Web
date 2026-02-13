@@ -1,4 +1,5 @@
 import type { SongDto } from "../types";
+import { toApiAbsoluteUrl } from "../utils/url";
 
 type Props = {
   song: SongDto;
@@ -11,7 +12,7 @@ function withCoverSize(url: string, size: number) {
 }
 
 export default function SongCard({ song, onOpen }: Props) {
-  const coverSrc = withCoverSize(song.coverUrl, 128);
+  const coverSrc = withCoverSize(toApiAbsoluteUrl(song.coverUrl), 128);
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">

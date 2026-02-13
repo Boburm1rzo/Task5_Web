@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getLyrics, getSongDetails } from "../services/api";
 import { useMusicStore } from "../store/musicStore";
 import AudioPlayer from "./AudioPlayer";
+import { toApiAbsoluteUrl } from "../utils/url";
 
 type Props = { index: number };
 
@@ -64,22 +65,19 @@ export default function SongDetailsModal({ index }: Props) {
     return <div className="text-red-600">Failed: {detailsErr}</div>;
   if (!details) return null;
 
-  // cover thumbnail (tezroq)
+  const coverBase = toApiAbsoluteUrl(details.coverUrl ?? "");
   const coverSrc =
-    typeof details.coverUrl === "string"
-      ? details.coverUrl.includes("?")
-        ? `${details.coverUrl}&size=256`
-        : `${details.coverUrl}?size=256`
+    coverBase.length > 0
+      ? coverBase.includes("?")
+        ? `${coverBase}&size=256`
+        : `${coverBase}?size=256`
       : "";
+
+  const previewSrc = toApiAbsoluteUrl(details.previewUrl ?? "");
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-4">
-      {/* Responsive layout:
-          - Mobile: stack (1 col)
-          - Large: 3 columns like original
-      */}
       <div className="grid gap-4 lg:grid-cols-[170px_1.6fr_1.2fr]">
-        {/* LEFT: Cover + badges */}
         <div className="flex items-start gap-4 lg:block">
           <img
             className="h-[120px] w-[120px] flex-none rounded-2xl border border-slate-200 object-cover sm:h-[170px] sm:w-[170px]"
@@ -104,7 +102,6 @@ export default function SongDetailsModal({ index }: Props) {
           </div>
         </div>
 
-        {/* MIDDLE: info + audio + review */}
         <div className="min-w-0">
           <div className="text-xl font-extrabold leading-tight sm:text-2xl">
             {details.title}
@@ -115,7 +112,7 @@ export default function SongDetailsModal({ index }: Props) {
           </div>
 
           <div className="mt-3">
-            <AudioPlayer src={details.previewUrl} />
+            <AudioPlayer src={previewSrc} />
           </div>
 
           <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-slate-800">
@@ -123,7 +120,6 @@ export default function SongDetailsModal({ index }: Props) {
           </div>
         </div>
 
-        {/* RIGHT: lyrics */}
         <div className="min-w-0">
           <div className="flex items-center justify-between">
             <div className="font-extrabold">Lyrics</div>
