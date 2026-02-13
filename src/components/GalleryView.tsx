@@ -12,9 +12,6 @@ export default function GalleryView() {
   const likesAvg = useMusicStore((s) => s.likesAvg);
   const pageSize = useMusicStore((s) => s.pageSize);
 
-  const [page, setPage] = useState(1);
-  const pageRef = useRef(1);
-
   const [items, setItems] = useState<SongDto[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
@@ -23,14 +20,13 @@ export default function GalleryView() {
   const [loadingFirst, setLoadingFirst] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    setPage(page);
-    pageRef.current = 1;
+  const pageRef = useRef(1);
 
+  useEffect(() => {
+    pageRef.current = 1;
     setItems([]);
     setHasMore(true);
     setOpenIndex(null);
-
     setError(null);
   }, [locale, seed, likesAvg, pageSize]);
 
@@ -57,9 +53,7 @@ export default function GalleryView() {
       }
 
       setItems((prev) => [...prev, ...songs]);
-
       pageRef.current = nextPage + 1;
-      setPage(nextPage + 1);
     } catch (e: any) {
       setError(e?.message ?? "Failed to load songs");
       setHasMore(false);
@@ -83,6 +77,8 @@ export default function GalleryView() {
     );
   }
 
+  const columns = "grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3";
+
   return (
     <div className="space-y-3">
       {loadingFirst && items.length === 0 ? (
@@ -100,16 +96,23 @@ export default function GalleryView() {
           <div className="py-4 text-center text-slate-400">No more songs.</div>
         }
       >
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={columns}>
           {items.map((s) => {
             const expanded = openIndex === s.index;
 
             return (
-              <div key={`${locale}-${seed}-${s.index}`} className="space-y-2">
-                <SongCard song={s} onOpen={setOpenIndex} />
+              <div key={`${locale}-${seed}-${s.index}`} className="contents">
+                <div>
+                  <SongCard
+                    song={s}
+                    onOpen={(i) =>
+                      setOpenIndex((prev) => (prev === i ? null : i))
+                    }
+                  />
+                </div>
 
                 {expanded ? (
-                  <div className="sm:col-span-2 lg:col-span-3">
+                  <div className="col-span-full">
                     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
                       <SongDetailsModal index={s.index} />
                     </div>
